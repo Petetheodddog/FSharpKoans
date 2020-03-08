@@ -64,7 +64,7 @@ module ``07: The Good Kind of Discrimination`` =
     let ``04 Pattern-matching using named fields`` () =
         let result =
             match BSc (Management, ComputerScience) with
-            | BSc (first=Management; second=ComputerScience) -> "correct" // <-- USE a pattern-match with named fields!
+            | (BSc (first=Management; second=ComputerScience)) -> "correct" // <-- USE a pattern-match with named fields!
             | _ -> "nope"
         result |> should equal "correct"
 
