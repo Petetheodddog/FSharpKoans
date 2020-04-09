@@ -89,26 +89,26 @@ module ``08: Parametric polymorphism`` =
     | Secnod of 'a * 'b
     | Thrid of ('a -> ('b * 'a * int)) // <-- this shouldn't look odd.  Functions are first-class!
 
-    [<Test>]                                                                                                    //not sure how to do these...
+    [<Test>]                                                                                                 
     let ``04 Creating a generic discriminated union (Part 1).`` () =
         let a = Secnod (6.55, 7)
         let b = Thrid (fun k -> true, k, 8)
         // how do you write a generic type?
-        a |> should be ofType<float*int>
-        b |> should be ofType<'a -> bool*'a*int>
+        a |> should be ofType<GenericDiscriminatedUnionExample<float,int>>
+        b |> should be ofType<GenericDiscriminatedUnionExample<'a, bool>>
 
-    type MyDiscriminatedUnion =
-    | Furoth of FILL_ME_IN
+    type MyDiscriminatedUnion <'a> =
+    | Furoth of 'a
     | Fevi
-    | Sxi of FILL_ME_IN
+    | Sxi of 'a
 
     [<Test>]
     let ``05 Creating a generic discriminated union (Part 2).`` () =
         // You need to edit the definition of MyDiscriminatedUnion first!  It's just above this test.
-        let a = __
-        let b = __
-        let c = __
-        let d = __
+        let a = Furoth(7)
+        let b = Sxi("bleh")
+        let c = Furoth('t')
+        let d = Sxi(true)
         match a with
         | Furoth n -> n |> should equal 7
         | _ -> Assert.Fail ()
