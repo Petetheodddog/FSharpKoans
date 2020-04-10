@@ -265,10 +265,18 @@ or something else), it's likely that you'll be able to use a fold.
         exists (fun _ -> true) [] |> should equal false
 
     // List.partition
-    [<Test>]                                                                                 //do this
+    [<Test>]                                                                       
     let ``19 partition: splitting a list based on a criterion`` () =
         let partition (f : 'a -> bool) (xs : 'a list) : ('a list) * ('a list) =
-            __ //Do this
+            let rec divider xs (a, b) = 
+                match xs with 
+                |[] -> (a, b)
+                |head::tail -> 
+                    match (f head) with
+                    |true -> divider tail (a @ [head], b)
+                    |_ -> divider tail (a, b @ [head])
+            divider xs ([], [])
+            
         let a, b = partition (fun x -> x%2=0) [1;2;3;4;5;6;7;8;9;10]
         a |> should equal [2;4;6;8;10]
         b |> should equal [1;3;5;7;9]
@@ -332,7 +340,7 @@ or something else), it's likely that you'll be able to use a fold.
     *)
 
     // List.choose
-    [<Test>]            //doesnt work                        doesnt work                                       doesnt work
+    [<Test>]
     let ``23 choose: find all matching elements, and transform them`` () =
         // Think about this: why does the signature of `choose` have to be like this?
         // - why can't it take an 'a->'b, instead of an 'a->'b option ?
@@ -342,9 +350,9 @@ or something else), it's likely that you'll be able to use a fold.
                 match xs with
                 | head :: tail -> 
                     match p head with 
-                    | Some value -> findHelper tail (value::out)
+                    | Some value -> findHelper tail (value::out) // OR (out @ [value]) 
                     | _ -> findHelper tail out
-                | [] -> out
+                | [] -> out |> List.rev //Delete "|> List.rev" for alt method
             findHelper xs []
 
         let f x =
@@ -364,7 +372,14 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``24 mapi: like map, but passes along an item index as well`` () =
         let mapi (f : int -> 'a -> 'b) (xs : 'a list) : 'b list =
-            __ // Do this
+            [for index = 0 to (List.length xs) - 1 do yield (f index xs.[index])]
+            //Alt Method
+            //let rec inner index xs out = 
+            //    match xs with
+            //    | head::tail -> inner (index + 1) tail (f index head::out)
+            //    |[] -> out |> List.rev
+            //inner 0 xs []
+
         mapi (fun i x -> -i, x+1) [9;8;7;6] |> should equal [0,10; -1,9; -2,8; -3,7]
         let hailstone i t =
             match i%2 with
