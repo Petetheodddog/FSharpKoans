@@ -295,15 +295,20 @@ or something else), it's likely that you'll be able to use a fold.
             | head :: tail -> if p(head)
                                 then Some(head)
                                 else tryFind p tail
-            | [] -> None 
+            | [] -> None
         tryFind (fun x -> x<=45) [100;85;25;55;6] |> should equal (Some 25)
         tryFind (fun x -> x>450) [100;85;25;55;6] |> should equal None
 
     // List.tryPick
     [<Test>]
     let ``22 tryPick: find the first matching element, if any, and transform it`` () =
-        let tryPick (p : 'a -> 'b option) (xs : 'a list) : 'b option =
-            __ // Do this
+        let rec tryPick (p : 'a -> 'b option) (xs : 'a list) : 'b option =
+            match xs with
+            | head :: tail -> 
+                match p head with 
+                | Some value -> Some value
+                | _ -> tryPick p tail
+            | [] -> None
         let f x =
             match x<=45 with
             | true -> Some(x*2)
@@ -327,19 +332,27 @@ or something else), it's likely that you'll be able to use a fold.
     *)
 
     // List.choose
-    [<Test>]
+    [<Test>]            //doesnt work                        doesnt work                                       doesnt work
     let ``23 choose: find all matching elements, and transform them`` () =
         // Think about this: why does the signature of `choose` have to be like this?
         // - why can't it take an 'a->'b, instead of an 'a->'b option ?
         // - why does it return a 'b list, and not a 'b list option ?
         let choose (p : 'a -> 'b option) (xs : 'a list) : 'b list =
-            __ // Do this
+            let rec findHelper xs out =
+                match xs with
+                | head :: tail -> 
+                    match p head with 
+                    | Some value -> findHelper tail (value::out)
+                    | _ -> findHelper tail out
+                | [] -> out
+            findHelper xs []
+
         let f x =
             match x<=45 with
             | true -> Some(x*2)
             | _ -> None
         choose f [100;85;25;55;6] |> should equal [50;12]
-        let g x =
+        let g x = 
             match String.length x with
             | 1 | 3 | 5 | 7 | 9 -> Some <| String.concat "-" [x;x;x]
             | 0 | 2 | 4 | 6 | 8 -> Some "Yo!"

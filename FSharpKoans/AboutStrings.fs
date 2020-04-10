@@ -71,9 +71,9 @@ module ``11: String manipulation`` =
     // The default precision is about 6, as near as I can tell.
     [<Test>]
     let ``11 String formatting: %f format specifier`` () =
-        let result = sprintf "%.6f" 2.26
-        let condensed = sprintf "%.2f" 2.26
-        let rounded = sprintf "%f" 2.26
+        let result = sprintf "Multiply by %.6f, then triple" 2.26
+        let condensed = sprintf "Multiply by %.2f, then triple" 2.26
+        let rounded = sprintf "Multiply by %.1f, then triple" 2.26
         result |> should equal "Multiply by 2.260000, then triple"
         condensed |> should equal "Multiply by 2.26, then triple"
         rounded |> should equal "Multiply by 2.3, then triple"
